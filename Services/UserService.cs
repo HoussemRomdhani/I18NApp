@@ -11,10 +11,14 @@ public class UserService
         this.usersRepository = usersRepository;
     }
 
-    public async Task<string> GetUserCulture()
+    public async Task<string> GetUserCultureOrDefault()
     {
         User? user = await usersRepository.GetUser();
 
-        return user == null ? string.Empty : user.Culture;
+        string culture = user != null ? user.Culture : CultureDefaults.CultureFR;
+
+        string result  = !string.IsNullOrWhiteSpace(culture) ? culture : CultureDefaults.CultureFR;
+
+        return result;
     }
 }

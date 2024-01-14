@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Localization;
+using Models;
 using Services;
 
 namespace Demo.Services;
 
 public class UserProfileRequestCultureProvider : RequestCultureProvider
 {
-    private const string defaultCulture = "fr-FR";
-
     public UserProfileRequestCultureProvider()
     {
     }
@@ -14,8 +13,8 @@ public class UserProfileRequestCultureProvider : RequestCultureProvider
     public override async Task<ProviderCultureResult?> DetermineProviderCultureResult(HttpContext httpContext)
     {
         UserService? userService = httpContext.RequestServices.GetService<UserService>();
-       
-        string culture = userService != null ? await userService.GetUserCulture() : defaultCulture;
+
+        string culture = userService != null ? await userService.GetUserCultureOrDefault() : CultureDefaults.CultureFR;
 
         return new ProviderCultureResult(culture);
     }

@@ -17,13 +17,7 @@ public class Recipe
         Steps = new List<Step>();
     }
 
-    public void AddIngredients(IList<Ingredient> ingredients)
-    {
-        Ingredients.AddRange(ingredients);
-    }
+    public void AddIngredients(IList<Ingredient> ingredients) => Ingredients.AddRange(ingredients);
 
-    public void AddSteps(IList<Step> steps)
-    {
-        Steps.AddRange(steps);
-    }
+    public void AddSteps(IList<Step> steps) => Steps.AddRange(steps);
 }

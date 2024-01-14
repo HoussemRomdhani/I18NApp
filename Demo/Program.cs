@@ -1,12 +1,12 @@
-using Demo.Services;
+using Demo.Extensions;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Options;
+using Models;
 using Repositories;
 using Repositories.Models;
 using Services;
-using System.Globalization;
 
 namespace Demo;
 
@@ -15,6 +15,8 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddSingleton(new DatabaseConfig { Name = builder.Configuration["DatabaseName"] ?? string.Empty });
         builder.Services.AddSingleton<UsersRepository>();
@@ -29,19 +31,13 @@ public class Program
         {
             options.FallbackPolicy = options.DefaultPolicy;
         });
-
-        var supportedCultures = new[]
-        {
-            new CultureInfo("en-US"),
-            new CultureInfo("fr-FR"),
-        };
-
+    
         builder.Services.Configure<RequestLocalizationOptions>(options =>
         {
-            options.DefaultRequestCulture = new RequestCulture(culture: "fr-FR", uiCulture: "fr-FR");
-            options.SupportedCultures = supportedCultures;
-            options.SupportedUICultures = supportedCultures;
-            options.AddInitialRequestCultureProvider(new UserProfileRequestCultureProvider());
+            options.DefaultRequestCulture = new RequestCulture(culture: CultureDefaults.CultureFR, uiCulture: CultureDefaults.CultureFR);
+            options.SupportedCultures = CultureDefaults.SupportedCultures;
+            options.SupportedUICultures = CultureDefaults.SupportedCultures;
+            options.SetDefaultCulture(CultureDefaults.CultureFR);
         });
 
         builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -68,6 +64,8 @@ public class Program
 
         app.UseAuthorization();
 
+        app.UseCookieRequestCulture();
+
         var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
 
         if (options != null)
@@ -79,7 +77,6 @@ public class Program
             app.UseRequestLocalization();
         }
 
-        app.UseRequestLocalization();
 
         app.MapControllerRoute(
             name: "default",
