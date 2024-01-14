@@ -1,0 +1,37 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model IEnumerable<Models.Recipe>
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = @Localizer["RECIPES"];
+}
+
+@foreach (var recipe in Model)
+{
+    <div class="card mb-3 border-light">
+        <div class="card-body">
+            <h5 class="card-title">@recipe.Title</h5>
+            <h6 class="card-subtitle mb-2 text-muted">@recipe.Desctiption</h6>
+            <h6>@Localizer["INGREDIENTS"]</h6>
+
+            <ul class="list-group mx-auto" style="max-width:30%">
+                @foreach (var ingredient in recipe.Ingredients)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @ingredient.Name 
+                        <span class="badge badge-primary text-muted">@ingredient.Quantity</span>
+                    </li>
+                }
+            </ul>
+
+            <h6>@Localizer["PREPARATION"]</h6>
+            <ol class="list-group list-group-numbered mx-auto">
+                @foreach (var step in recipe.Steps)
+                {
+                    <li class="list-group-item">@step.Text</li>
+                }
+            </ol>
+        </div>
+    </div>
+}
